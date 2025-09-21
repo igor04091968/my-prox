@@ -3,7 +3,7 @@ set -euo pipefail
 CF_API_TOKEN="jps7jP8vEjLBuCwpxWP98_LtCJC3t_44AK1-TJ1R"
 ZONE_ID="ccf60e342d8ba4948dbdf799d638fbe4"
 ZONE_NAME="iri1968.dpdns.org"
-RECORD_NAME="iri1968.dpdns.org"   # ваш поддомен
+RECORD_NAME="prox1.iri1968.dpdns.org"   # ваш поддомен
 RECORD_TYPE="A"                  # или AAAA для IPv6
 WAN_IP=$(curl -s https://api.ipify.org)
 
