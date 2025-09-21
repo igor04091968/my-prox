@@ -15,7 +15,7 @@ RUN chmod +x /app/cf-ddns.sh && chmod +x /app/entrypoint.sh
 RUN mkdir -p /run/tinyproxy && chown -R tinyproxy:tinyproxy /run/tinyproxy
 
 # Expose the proxy port
-EXPOSE 80
+EXPOSE 443
 
 # Run the entrypoint script
 CMD ["/app/entrypoint.sh"]
