@@ -1,7 +1,7 @@
 FROM alpine:latest
 
 # Install tinyproxy and dependencies for ddns script
-RUN apk update && apk add --no-cache tinyproxy curl jq
+RUN apk update && apk add --no-cache tinyproxy curl jq bash
 
 # Copy config and scripts
 COPY tinyproxy.conf /etc/tinyproxy/tinyproxy.conf
