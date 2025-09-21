@@ -39,27 +39,26 @@ detect_ipv6() { curl -s https://api64.ipify.org; }  # вернёт IPv6 при �
 
 ensure_record() {
   local zone_id="$1" type="$2" content="$3"
+  local rec_id
+  rec_id="$(get_record_id "$zone_id" "$type")"
 
-  local rec_id; rec_id="$(get_record_id "$zone_id" "$type")"
+  # Build JSON payload with printf for robustness against shell quoting issues
+  local json_payload
+  json_payload=$(printf '{"type":"%s","name":"%s","content":"%s","proxied":%s,"ttl":%s}' \
+    "$type" "$RECORD_NAME" "$content" "$PROXIED" "$TTL")
+
   if [[ -z "$rec_id" ]]; then
     echo "Создаю ${type} ${RECORD_NAME} -> ${content}"
-    api POST "/zones/${zone_id}/dns_records" \
-      --data "$(jq -n --arg name "$RECORD_NAME" --arg type "$type" --arg content "$content" \
-        --argjson proxied "$PROXIED" --argjson ttl "$TTL" 
-        '{type:$type,name:$name,content:$content,proxied:$proxied,ttl:$ttl}')" \
-      | jq . 
+    api POST "/zones/${zone_id}/dns_records" --data "$json_payload" | jq . 
   else
-    local old; old="$(current_content "$zone_id" "$type")"
+    local old
+    old="$(current_content "$zone_id" "$type")"
     if [[ "$old" == "$content" ]]; then
       echo "Без изменений: ${type} ${RECORD_NAME} уже ${content}"
       return 0
     fi
     echo "Обновляю ${type} ${RECORD_NAME}: ${old} -> ${content}"
-    api PUT "/zones/${zone_id}/dns_records/${rec_id}" \
-      --data "$(jq -n --arg name "$RECORD_NAME" --arg type "$type" --arg content "$content" \
-        --argjson proxied "$PROXIED" --argjson ttl "$TTL" 
-        '{type:$type,name:$name,content:$content,proxied:$proxied,ttl:$ttl}')" \
-      | jq . 
+    api PUT "/zones/${zone_id}/dns_records/${rec_id}" --data "$json_payload" | jq . 
   fi
 }
 
