@@ -1,7 +1,11 @@
 FROM alpine:latest
 
-# Install tinyproxy and dependencies for ddns script
-RUN apk update && apk add --no-cache tinyproxy curl jq bash
+# Install tinyproxy and dependencies for ddns script and chisel
+RUN apk update && apk add --no-cache tinyproxy curl jq bash gunzip
+
+# Download and install chisel
+RUN curl -sL https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_linux_amd64.gz | gunzip > /usr/local/bin/chisel && \
+    chmod +x /usr/local/bin/chisel
 
 # Copy config and scripts
 COPY tinyproxy.conf /etc/tinyproxy/tinyproxy.conf
