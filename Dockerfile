@@ -1,25 +1,22 @@
-FROM alpine:latest
+FROM node:18-slim
 
-# Install tinyproxy and dependencies for ddns script and chisel
-RUN apk update && apk add --no-cache tinyproxy curl jq bash gzip
+WORKDIR /app
 
-# Download and install chisel
-RUN curl -sL https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_linux_amd64.gz | gunzip > /usr/local/bin/chisel && \
-    chmod +x /usr/local/bin/chisel
+# Install cron and jq for the DDNS script
+RUN apt-get update && apt-get install -y cron jq && rm -rf /var/lib/apt/lists/*
 
-# Copy config and scripts
-COPY tinyproxy.conf /etc/tinyproxy/tinyproxy.conf
-COPY cf-ddns.sh /app/cf-ddns.sh
-COPY entrypoint.sh /app/entrypoint.sh
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+# Setup cron job if my-cron exists
+RUN if [ -f /app/my-cron ]; then chmod 0644 /app/my-cron && crontab /app/my-cron; fi
 
 # Make scripts executable
-RUN chmod +x /app/cf-ddns.sh && chmod +x /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+RUN if [ -f /app/cf-ddns.sh ]; then chmod +x /app/cf-ddns.sh; fi
 
-# Create directory for pid file and set permissions
-RUN mkdir -p /run/tinyproxy && chown -R tinyproxy:tinyproxy /run/tinyproxy
+EXPOSE 8080
 
-# Expose the proxy port
-EXPOSE 80
-
-# Run the entrypoint script
-CMD ["/app/entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]
