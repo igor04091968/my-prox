@@ -11,14 +11,14 @@
 ) &
 
 # Start the Chisel client reverse tunnel in a loop
-(
-  while true; do
-    echo "--- Starting Chisel client ---"
-    chisel client vds1.iri1968.dpdns.org:8080 R:8282:localhost:80
-    echo "--- Chisel client disconnected. Reconnecting in 5 seconds. ---"
-    sleep 5
-  done
-) &
+#(
+#  while true; do
+#    echo "--- Starting Chisel client ---"
+#    chisel client vds1.iri1968.dpdns.org:8080 R:8282:localhost:80
+#    echo "--- Chisel client disconnected. Reconnecting in 5 seconds. ---"
+#    sleep 5
+#  done
+#) &
 
 # Start tinyproxy in the foreground as the main process
 echo "--- Starting tinyproxy ---"
