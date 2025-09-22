@@ -14,7 +14,7 @@
 (
   while true; do
     echo "--- Starting Chisel client ---"
-    chisel client vds1.iri1968.dpdns.org:4443 R:8181:localhost:443
+    chisel client vds1.iri1968.dpdns.org:4443 R:8282:localhost:443
     echo "--- Chisel client disconnected. Reconnecting in 5 seconds. ---"
     sleep 5
   done
